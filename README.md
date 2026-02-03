@@ -1,70 +1,68 @@
-# Getting Started with Create React App
+# ResumAI
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+AI-powered resume analysis with Google sign-in, OCR support for scanned PDFs/images, and detailed ATS-compatible scoring.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- Google OAuth sign-in
+- Resume upload (PDF, scanned PDF, JPG, PNG, BMP, TIFF)
+- OCR fallback via Tesseract
+- Detailed scoring across Format, Content, Keywords, Impact
+- ATS compatibility scoring
 
-### `npm start`
+## Tech Stack
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- Frontend: React + Tailwind CSS
+- Backend: FastAPI + OpenAI
+- OCR: Tesseract + pdf2image
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Prerequisites
 
-### `npm test`
+- Node.js 16+
+- Python 3.8+
+- Tesseract OCR installed
+- Poppler (for PDF OCR on Windows)
+- OpenAI API key
+- Google OAuth Client ID
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Setup
 
-### `npm run build`
+### 1) Backend
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. Install dependencies:
+   - `pip install -r backend/requirements.txt`
+2. Create backend env file: [backend/.env](backend/.env)
+   - `OPENAI_API_KEY=...`
+   - `GOOGLE_CLIENT_ID=...`
+   - `JWT_SECRET=...`
+   - `TESSERACT_CMD=C:\Program Files\Tesseract-OCR\tesseract.exe`
+3. Run server:
+   - `python backend/main.py`
+   - Server runs at http://localhost:8000
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 2) Frontend
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1. Install dependencies:
+   - `npm install`
+2. Create frontend env file: .env.local
+   - `REACT_APP_API_URL=http://localhost:8000`
+   - `REACT_APP_GOOGLE_CLIENT_ID=...`
+3. Run app:
+   - `npm start`
+   - App runs at http://localhost:3000
 
-### `npm run eject`
+## Google Sign-In Setup
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Follow the full guide in [GOOGLE_AUTH_SETUP.md](GOOGLE_AUTH_SETUP.md).
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## API Overview
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- POST `/auth/signin` – Google token verification
+- GET `/auth/me` – current user profile
+- GET `/resumes` – current user resume history
+- POST `/analyze-resume` – analyze resume (requires auth)
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Notes
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- Resume history is stored in-memory; it resets when the backend restarts.
+- For production, move users and resume history to a database.

@@ -23,8 +23,7 @@ export function ResumeUpload({ onAnalyze, isAnalyzing }: ResumeUploadProps) {
     if (
       droppedFile &&
       (droppedFile.type === "application/pdf" ||
-        droppedFile.type ===
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+        droppedFile.type.startsWith("image/"))
     ) {
       setFile(droppedFile);
     }
@@ -76,7 +75,7 @@ export function ResumeUpload({ onAnalyze, isAnalyzing }: ResumeUploadProps) {
       >
         <input
           type="file"
-          accept=".pdf,.docx"
+          accept=".pdf,image/*"
           onChange={handleFileInput}
           className="absolute inset-0 cursor-pointer opacity-0"
           disabled={isAnalyzing}
@@ -117,7 +116,7 @@ export function ResumeUpload({ onAnalyze, isAnalyzing }: ResumeUploadProps) {
                 Drop your resume here or click to browse
               </p>
               <p className="mt-1 text-xs text-muted-foreground">
-                Supports PDF and DOCX files
+                Supports PDF and image files
               </p>
             </div>
           </div>
