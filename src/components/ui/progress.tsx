@@ -3,12 +3,14 @@
 import * as React from 'react'
 
 import { cn } from '@/lib/utils'
+import { useTheme } from '../../contexts/theme'
 
 function Progress({
   className,
   value,
   ...props
 }: React.HTMLAttributes<HTMLDivElement> & { value?: number }) {
+  const { isDarkMode } = useTheme()
   const numValue = Number(value) || 0
   
   // Create a more sophisticated color gradient based on value
@@ -23,7 +25,11 @@ function Progress({
   }
   
   return (
-    <div className={cn('relative h-3 w-full overflow-hidden rounded-full bg-slate-700', className)}>
+    <div className={cn(
+      'relative h-3 w-full overflow-hidden rounded-full',
+      isDarkMode ? 'bg-slate-700' : 'bg-gray-300',
+      className
+    )}>
       <div
         className="h-full transition-all duration-700 ease-out shadow-lg"
         style={{ 

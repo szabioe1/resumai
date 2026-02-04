@@ -1,19 +1,26 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
+import { useTheme } from "@/contexts/theme";
 
 const Card = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      "rounded-lg border border-gray-800 bg-gray-900/50 text-white shadow-sm",
-      className
-    )}
-    {...props}
-  />
-));
+>(({ className, ...props }, ref) => {
+  const { isDarkMode } = useTheme();
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        "rounded-lg border shadow-sm",
+        isDarkMode
+          ? "border-gray-800 bg-gray-900/50 text-white"
+          : "border-gray-200 bg-white text-gray-950",
+        className
+      )}
+      {...props}
+    />
+  );
+});
 Card.displayName = "Card";
 
 const CardHeader = React.forwardRef<

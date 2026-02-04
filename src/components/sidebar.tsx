@@ -13,38 +13,20 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth";
+import { useTheme } from "@/contexts/theme";
 import { useNavigate } from "react-router-dom";
 
 const features = [
   {
-    icon: Sparkles,
-    label: "AI Analysis",
-    description: "Deep resume scoring",
-  },
-  {
     icon: Target,
-    label: "ATS Optimization",
-    description: "Beat applicant tracking",
-  },
-  {
-    icon: BookOpen,
-    label: "Keyword Matching",
-    description: "Industry-specific terms",
-  },
-  {
-    icon: TrendingUp,
-    label: "Career Insights",
-    description: "Growth recommendations",
-  },
-  {
-    icon: Zap,
-    label: "Quick Fixes",
-    description: "Instant improvements",
+    label: "Job Description Matcher",
+    description: "Match resume to job postings",
   },
 ];
 
 const navigation = [
   { icon: LayoutDashboard, label: "Dashboard" },
+  { icon: Target, label: "Job Matcher" },
   { icon: FileText, label: "My Resumes" },
   { icon: Settings, label: "Settings" },
 ];
@@ -56,6 +38,7 @@ interface SidebarProps {
 
 export function Sidebar({ onNavigate, currentPage = "Dashboard" }: SidebarProps) {
   const { user, signout } = useAuth();
+  const { isDarkMode } = useTheme();
   const navigate = useNavigate();
 
   const handleSignOut = () => {
@@ -71,58 +54,96 @@ export function Sidebar({ onNavigate, currentPage = "Dashboard" }: SidebarProps)
       .toUpperCase()
       .slice(0, 2);
   };
+  
   return (
-    <aside className="fixed left-0 top-0 z-40 h-screen w-64 border-r border-sidebar-border bg-sidebar">
+    <aside className={cn(
+      "fixed left-0 top-0 z-40 h-screen w-64 border-r backdrop-blur",
+      isDarkMode 
+        ? "border-slate-700/50 bg-gradient-to-b from-slate-900/80 to-slate-900/60"
+        : "border-gray-200 bg-gradient-to-b from-white to-gray-50"
+    )}>
       <div className="flex h-full flex-col">
         {/* Logo */}
-        <div className="flex h-16 items-center gap-2 border-b border-sidebar-border px-6">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-            <FileText className="h-4 w-4 text-primary-foreground" />
+        <div className={cn(
+          "flex h-16 items-center gap-3 border-b px-6",
+          isDarkMode ? "border-slate-700/30" : "border-gray-200"
+        )}>
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-cyan-600 shadow-lg shadow-blue-500/20">
+            <FileText className="h-5 w-5 text-white font-bold" />
           </div>
-          <span className="text-xl font-semibold text-sidebar-foreground">
+          <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
             ResumAI
           </span>
         </div>
 
         {/* Navigation */}
-        <nav className="space-y-1 px-3 py-4">
+        <nav className="space-y-1 px-3 py-5">
           {navigation.map((item) => (
             <button
               key={item.label}
               type="button"
               onClick={() => onNavigate?.(item.label)}
               className={cn(
-                "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
+                "flex w-full items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-all",
                 currentPage === item.label
-                  ? "bg-sidebar-accent text-sidebar-primary"
-                  : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
+                  ? isDarkMode
+                    ? "bg-gradient-to-r from-blue-500/30 to-cyan-500/30 text-blue-100 border border-blue-500/30 shadow-lg shadow-blue-500/10"
+                    : "bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-900 border border-blue-300 shadow-lg shadow-blue-500/10"
+                  : isDarkMode
+                    ? "text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent"
+                    : "text-gray-600 hover:bg-gray-100 hover:text-gray-900 border border-transparent"
               )}
             >
-              <item.icon className="h-4 w-4" />
+              <item.icon className="h-5 w-5" />
               {item.label}
             </button>
           ))}
         </nav>
 
         {/* Features Section */}
-        <div className="flex-1 overflow-auto px-3 py-4">
-          <h3 className="mb-3 px-3 text-xs font-medium uppercase tracking-wider text-sidebar-foreground/50">
-            Features
+        <div className={cn(
+          "flex-1 overflow-auto px-3 py-4 border-t",
+          isDarkMode ? "border-slate-700/30" : "border-gray-200"
+        )}>
+          <h3 className={cn(
+            "mb-4 px-3 text-xs font-bold uppercase tracking-widest",
+            isDarkMode ? "text-slate-400" : "text-gray-500"
+          )}>
+            ✨ Features
           </h3>
-          <div className="space-y-1">
+          <div className="space-y-2">
             {features.map((feature) => (
               <div
                 key={feature.label}
-                className="group flex items-start gap-3 rounded-lg px-3 py-2.5 transition-colors hover:bg-sidebar-accent"
+                className={cn(
+                  "group flex items-start gap-3 rounded-lg px-3 py-3 transition-all border cursor-pointer",
+                  isDarkMode
+                    ? "hover:bg-slate-800/50 border-transparent hover:border-blue-500/20"
+                    : "hover:bg-gray-100 border-transparent hover:border-blue-300"
+                )}
               >
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-sidebar-accent group-hover:bg-primary/10">
-                  <feature.icon className="h-4 w-4 text-primary" />
+                <div className={cn(
+                  "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border",
+                  isDarkMode
+                    ? "bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border-blue-500/20 group-hover:border-blue-500/40"
+                    : "bg-gradient-to-br from-blue-100 to-cyan-100 border-blue-200 group-hover:border-blue-400"
+                )}>
+                  <feature.icon className={cn(
+                    "h-4 w-4",
+                    isDarkMode ? "text-blue-300" : "text-blue-600"
+                  )} />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-sidebar-foreground">
+                  <p className={cn(
+                    "text-sm font-semibold",
+                    isDarkMode ? "text-slate-100" : "text-gray-900"
+                  )}>
                     {feature.label}
                   </p>
-                  <p className="text-xs text-sidebar-foreground/50">
+                  <p className={cn(
+                    "text-xs mt-0.5",
+                    isDarkMode ? "text-slate-400" : "text-gray-500"
+                  )}>
                     {feature.description}
                   </p>
                 </div>
@@ -132,33 +153,62 @@ export function Sidebar({ onNavigate, currentPage = "Dashboard" }: SidebarProps)
         </div>
 
         {/* User Section */}
-        <div className="border-t border-sidebar-border p-4">
-          <div className="flex items-center gap-3 mb-3">
+        <div className={cn(
+          "border-t bg-gradient-to-t p-4",
+          isDarkMode
+            ? "border-slate-700/30 from-slate-900/60 to-transparent"
+            : "border-gray-200 from-gray-50 to-transparent"
+        )}>
+          <div className={cn(
+            "flex items-center gap-3 mb-4 rounded-lg p-3 border",
+            isDarkMode
+              ? "bg-gradient-to-r from-slate-800/50 to-slate-800/30 border-slate-700/30"
+              : "bg-gradient-to-r from-gray-100 to-gray-50 border-gray-200"
+          )}>
             {user?.picture ? (
               <img
                 src={user.picture}
                 alt={user.name}
-                className="h-9 w-9 rounded-full"
+                className={cn(
+                  "h-10 w-10 rounded-full border-2",
+                  isDarkMode ? "border-blue-500/30" : "border-blue-400"
+                )}
               />
             ) : (
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/20 text-sm font-medium text-primary">
+              <div className={cn(
+                "flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold border",
+                isDarkMode
+                  ? "bg-gradient-to-br from-blue-500/30 to-cyan-500/30 text-blue-300 border-blue-500/30"
+                  : "bg-gradient-to-br from-blue-100 to-cyan-100 text-blue-600 border-blue-300"
+              )}>
                 {user ? getInitials(user.name) : "U"}
               </div>
             )}
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium text-sidebar-foreground">
+              <p className={cn(
+                "truncate text-sm font-semibold",
+                isDarkMode ? "text-slate-100" : "text-gray-900"
+              )}>
                 {user?.name || "User"}
               </p>
-              <p className="truncate text-xs text-sidebar-foreground/50">
+              <p className={cn(
+                "truncate text-xs",
+                isDarkMode ? "text-slate-500" : "text-gray-500"
+              )}>
                 {user?.email || "No email"}
               </p>
             </div>
           </div>
           <button
             onClick={handleSignOut}
-            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground"
+            className={cn(
+              "flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium transition-all border",
+              isDarkMode
+                ? "text-slate-400 hover:bg-red-500/10 hover:text-red-300 hover:border-red-500/30 border-transparent"
+                : "text-gray-600 hover:bg-red-100 hover:text-red-600 hover:border-red-300 border-transparent"
+            )}
           >
-            <LogOut className="h-4 w-4" />
+            <LogOut className="h-5 w-5" />
             Sign Out
           </button>
         </div>
